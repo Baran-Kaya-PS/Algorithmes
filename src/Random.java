@@ -1,39 +1,42 @@
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+
+
+// X(n+1) = (a * Xn * c) mod m
 public class Random {
-    LocalTime time = LocalTime.now();
-    LocalDate date = LocalDate.now();
-    String dayAndTime = time.toString() + date.toString();
+    private static final long A = 1664525;
+    private static final long C = 1013904223;
+    private static final long M = 4294967296L;
 
-    Long seed;
-    int Modulus;
-    List<Integer> randomList = new LinkedList<Integer>();
-    public Random(long seed, int Modulus){
-        this.Modulus = Modulus;
-        this.seed = stringToInt(dayAndTime);
-        randomList.add((int) seed);
-    }
-    public String generatedValues(){
-        return randomList.toString();
-    }
-    public void setSeed(long a){
-        this.seed = a;
-    }
-    public float Random(int a, int b){
+    private long seed;
+    private final HashSet<Double> generatedNumbers = new HashSet<>();
 
-        int lastValue = randomList.get(randomList.size()-1);
-        int nextValue = (int) ((Math.pow(seed,seed%14) + lastValue)% this.Modulus);
-        randomList.add((int) nextValue);
-        return a+(float)nextValue/Modulus * (b-a);
+    public Random() {
+        this.seed = System.currentTimeMillis() + (int) (System.nanoTime() % Integer.MAX_VALUE);
     }
-    public Long stringToInt(String str) {
-        long result = 0;
-        for (char c : str.toCharArray()) {
-            result = (result * 31 + (int) c) % Modulus;
+
+    // Génère un nombre aléatoire entre 0 et 1
+    private double nextDouble() {
+        seed = (A * seed + C) % M;
+        double result =  (double) seed / M;
+        while (result == 0.0 || result == 1.0) {
+            seed = (A * seed + C) % M;
+            result = (double) seed / M;
         }
         return result;
     }
-
-}
+        public double random ( int a, int b){
+            if (a > b) {
+                throw new IllegalArgumentException("a must be less than or equal to b");
+            }
+            if ((b - a + 1) == generatedNumbers.size()) {
+                throw new IllegalStateException("All numbers between a and b have been generated");
+            }
+            int range = b-a;
+            double generated;
+            do {
+                generated = a + (nextDouble() * range);
+            } while (generatedNumbers.contains(generated));
+            generatedNumbers.add(generated);
+            return generated;
+        }
+    }
