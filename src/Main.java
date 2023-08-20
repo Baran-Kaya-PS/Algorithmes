@@ -4,10 +4,12 @@ import java.util.Random;
 public class Main {
     public static void main(String[] args) {
         int[] a = new int[]{5,3,1,17,10,84,19,6,22,9};
-        // initialise un Tas
-        Tas tas = new Tas(a.length);
-        tas.setTas(a);
-        tas.construireTasMax(a);
+        int capacité = a.length;
+        Tas t = new Tas(capacité);
+        t.setTas(a);
+        t.construireTasMax(a);
+        System.out.println(t.Max());
+        t.augmenterClé(8,100);
     }
 
     public static int[] permute_par_tri(int[] a){
