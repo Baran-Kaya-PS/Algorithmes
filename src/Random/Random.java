@@ -1,3 +1,5 @@
+package Random;
+
 import java.util.HashSet;
 // X(n+1) = (a * Xn * c) mod m
 public class Random {

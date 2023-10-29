@@ -1,3 +1,5 @@
+package StructureDeDonnée;
+
 import java.util.Arrays;
 
 public class Tas {

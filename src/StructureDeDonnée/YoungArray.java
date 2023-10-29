@@ -1,3 +1,5 @@
+package StructureDeDonnée;
+
 public class YoungArray {
     public int n;
     public int m;
@@ -6,7 +8,7 @@ public class YoungArray {
         this.a = a;
         this.n = a.length;
         this.m = a[0].length;
-        System.out.println("YoungArray créé : " + this.toString());
+        System.out.println("StructureDeDonnée.YoungArray créé : " + this.toString());
     }
     public YoungArray(int[] a) throws Exception {
         if (Math.sqrt(a.length) != (int) Math.sqrt(a.length)){
@@ -22,7 +24,7 @@ public class YoungArray {
                 k++;
             }
         }
-        System.out.println("YoungArray créé : " + this.toString());
+        System.out.println("StructureDeDonnée.YoungArray créé : " + this.toString());
     }
     public int get(int i, int j){
         return this.a[i][j];

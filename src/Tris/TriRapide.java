@@ -1,3 +1,5 @@
+package Tris;
+
 import java.util.Arrays;
 
 public class TriRapide {
