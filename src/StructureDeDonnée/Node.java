@@ -1,6 +1,6 @@
 package StructureDeDonnée;
 
-public class Node<T> {
+public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
     private T val;
     private Node<T> next;
 
@@ -45,4 +45,8 @@ public class Node<T> {
     public int hashCode() {
         return val != null ? val.hashCode() : 0;
     }
+    public int compareTo(Node<T> otherNode) {
+        return this.val.compareTo(otherNode.get());
+    }
+
 }

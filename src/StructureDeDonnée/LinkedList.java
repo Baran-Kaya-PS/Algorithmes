@@ -3,7 +3,7 @@ package StructureDeDonnée;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class LinkedList<T> implements Iterable<T>{
+public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
     Node<T> head;
     Node<T> tail;
 
@@ -104,10 +104,58 @@ public class LinkedList<T> implements Iterable<T>{
         }
         return false;
     }
-    public LinkedList<T> reverseList(){
-        //TODO
-        return null;
+    public void reverseList(){
+        Node<T> curr = head;
+        Node<T> prev = null;
+        Node<T> next = null;
+        while (curr != null){
+            curr.setNext(prev);
+            prev = curr;
+            curr = next;
+            next = next.getNext();
+        }
     }
+    public LinkedList<T> merge(LinkedList<T> list, boolean sorted){
+        LinkedList<T> mergedList = new LinkedList<>();
+        if (!sorted) {
+            // La logique pour fusionner deux listes non triées (comme vous l'avez déjà écrit)
+            Node<T> current = this.head;
+            while (current != null) {
+                mergedList.add(current.get());
+                current = current.getNext();
+            }
+            current = list.head;
+            while (current != null) {
+                mergedList.add(current.get());
+                current = current.getNext();
+            }
+        } else {
+            // La logique pour fusionner deux listes triées
+            Node<T> current1 = this.head;
+            Node<T> current2 = list.head;
+            while (current1 != null && current2 != null) {
+                if (current1.get().compareTo(current2.get()) <= 0) {
+                    mergedList.add(current1.get());
+                    current1 = current1.getNext();
+                } else {
+                    mergedList.add(current2.get());
+                    current2 = current2.getNext();
+                }
+            }
+            // Ajouter les éléments restants de la première liste si nécessaire
+            while (current1 != null) {
+                mergedList.add(current1.get());
+                current1 = current1.getNext();
+            }
+            // Ajouter les éléments restants de la deuxième liste si nécessaire
+            while (current2 != null) {
+                mergedList.add(current2.get());
+                current2 = current2.getNext();
+            }
+        }
+        return mergedList;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
