@@ -43,9 +43,20 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
 
     @Override
     public int hashCode() {
-        return val != null ? val.hashCode() : 0;
+        return val != null ? val.hashCode() : 0; // return 0 si val est null, sinon return val.hashCode()
     }
+    @Override
     public int compareTo(Node<T> otherNode) {
+        if (this.val == null && otherNode.get() == null) {
+            return 0;
+        }
+        if (this.val == null) {
+            return -1;
+        }
+        if (otherNode.get() == null) {
+            return 1;
+        }
+        // Si aucune valeur n'est null, utilisez compareTo pour les comparer.
         return this.val.compareTo(otherNode.get());
     }
 

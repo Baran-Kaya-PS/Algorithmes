@@ -1,5 +1,6 @@
 package StructureDeDonnée;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -16,17 +17,19 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         }
     }
     public void add(T data){
+        System.out.println("Ajout de l'élément : " + data);
         Node<T> newNode = new Node<>(data);
         if (head == null){
             head = newNode;
-            tail = newNode;
         } else {
             tail.setNext(newNode);
-            tail = newNode;
         }
+        tail = newNode;
+        System.out.println(this);
     }
     public void add(T data, int index){
         checkIndex(index);
+        System.out.println("Ajout de l'élément : " + data + " à l'emplacement : "+ index);
         if (index == 0){
             Node<T> node = new Node<>(data);
             node.setNext(head);
@@ -39,8 +42,10 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         Node<T>old_next = current.getNext();
         current.setNext(new Node<>(data));
         current.getNext().setNext(old_next);
+        System.out.println(this);
     }
     public void clear(){
+        System.out.println("Suppresion des valeurs de la linkedlist");
         head = null;
         tail = null;
     }
@@ -89,9 +94,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
             if (curr.getNext().get().equals(value)) {
                 curr.setNext(curr.getNext().getNext());
                 if(curr.getNext() == null) tail = curr; // Si on supprime le dernier élément
-            } else {
-                curr = curr.getNext();
-            }
+            } else curr = curr.getNext();
         }
     }
     public boolean hasCycle(){
@@ -105,14 +108,15 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         return false;
     }
     public void reverseList(){
+        System.out.println("liste avant le reverse + " + this.toString());
         Node<T> curr = head;
         Node<T> prev = null;
         Node<T> next = null;
         while (curr != null){
+            next = curr.getNext();
             curr.setNext(prev);
             prev = curr;
             curr = next;
-            next = next.getNext();
         }
     }
     public LinkedList<T> merge(LinkedList<T> list, boolean sorted){
@@ -196,6 +200,58 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         return -1;
     }
 
+    public Node<T> intersection(LinkedList<T> list){
+        int thisListSize = this.size();
+        int listSize = list.size();
+        int sizeDiff = Math.abs(thisListSize - listSize);
+
+        Node<T> curr = this.head;
+        Node<T> listcurr = list.head;
+
+        if(thisListSize>listSize){
+            while (sizeDiff-- != 0){
+                curr = curr.getNext();
+            }
+        } else {
+            while (sizeDiff-- != 0){
+                listcurr = listcurr.getNext();
+            }
+        }
+        while (curr != null && listcurr != null) {
+            if (curr == listcurr) {
+                return curr; // Intersection trouvée
+            }
+            curr = curr.getNext();
+            listcurr = listcurr.getNext();
+        }
+        return null;
+    }
+    public void deleteCycle(){
+        if (!this.hasCycle() == true){
+            System.out.println("Aucun cycle détécté!");
+            return;
+        }
+        Node<T> slow = head;
+        Node<T> fast = head.getNext();
+
+        do {
+            slow = slow.getNext();
+            fast = fast.getNext().getNext();
+        } while (slow != fast);
+
+        slow = head;
+        Node<T> prev = null;
+        while (slow != fast){
+            prev = fast;
+            slow = slow.getNext();
+            fast = fast.getNext();
+        }
+        if (prev != null){
+            prev.setNext(null);
+        }
+        System.out.println("cycle supprimé");
+    }
+
     public void set(int index, T data){
         checkIndex(index);
         Node<T> current = head;
@@ -238,8 +294,92 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         return size;
     }
     public static void main(String[] args) {
+        LinkedList<Integer> myList = new LinkedList<>();
 
+        // Ajout d'éléments à la liste
+        myList.add(1);
+        myList.add(2);
+        myList.add(3);
+        myList.add(4);
+        myList.add(5);
+
+        myList.createCycle(2); // Créer un cycle au noeud avec la valeur 3
+
+        System.out.println("Affichage de la liste avec cycle:");
+        System.out.println(myList); // Ici, la liste sera affichée avec la représentation du cycle
+
+        System.out.println("Cycle détecté avant suppression: " + myList.hasCycle());
+
+        myList.deleteCycle();
+
+        System.out.println("Cycle détecté après suppression: " + myList.hasCycle());
+
+        System.out.println("Affichage de la liste sans cycle:");
+        System.out.println(myList); // Ici, la liste sera affichée sans cycle après suppression
     }
+
+
+    public void createCycle(int index) {
+        if (head == null) throw new NoSuchElementException("La liste est vide.");
+        checkIndex(index);
+
+        Node<T> current = head;
+        int currentIndex = 0;
+        while (currentIndex != index) {
+            current = current.getNext();
+            currentIndex++;
+        }
+        tail.setNext(current);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+
+        HashSet<Node<T>> visited = new HashSet<>();
+        Node<T> current = head;
+        Node<T> cycleStart = null;
+
+        while (current != null) {
+            if (visited.contains(current)) {
+                cycleStart = current;
+                break;
+            }
+            visited.add(current);
+            sb.append(current.get().toString());
+            if (current.getNext() != null) {
+                sb.append(", ");
+            }
+            current = current.getNext();
+        }
+
+        if (cycleStart != null) {
+            sb.append("] -> Cycle starts at: ");
+            sb.append(cycleStart.get().toString());
+            sb.append(" -> [");
+            current = cycleStart;
+            do {
+                sb.append(current.get().toString());
+                current = current.getNext();
+                if (current != cycleStart) {
+                    sb.append(", ");
+                }
+            } while (current != cycleStart && current != null);
+            sb.append("] (returns to ");
+            sb.append(cycleStart.get().toString());
+            sb.append(")");
+        } else {
+            sb.append("]");
+        }
+
+        return sb.toString();
+    }
+
+
+
+
+
     @Override
     public Iterator<T> iterator() {
         return new LinkedListIterator();
