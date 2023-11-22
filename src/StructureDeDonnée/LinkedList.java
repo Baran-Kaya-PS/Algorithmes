@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
+    //TODO implémenter STREAM --> plus rapide a écrire
     Node<T> head;
     Node<T> tail;
 
@@ -99,7 +100,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
     }
     public boolean hasCycle(){
         Node<T> slow = head;
-        Node<T> fast = head.getNext(); // pour eviter de return true dès le début
+        Node<T> fast = head.getNext();
         while (fast != null && fast.getNext() != null) {
             if (slow.equals(fast)) return true;
             slow = slow.getNext();
@@ -375,11 +376,6 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
         return sb.toString();
     }
-
-
-
-
-
     @Override
     public Iterator<T> iterator() {
         return new LinkedListIterator();
