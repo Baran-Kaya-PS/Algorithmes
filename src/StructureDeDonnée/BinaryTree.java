@@ -5,6 +5,8 @@ import com.sun.source.tree.Tree;
 import java.util.*;
 import java.util.function.Consumer;
 
+import static java.util.Objects.isNull;
+
 public class BinaryTree<T extends Comparable<T>> implements Iterable<T>{
     // TODO implémenter stream dans le code
     TreeNode<T> root;
@@ -17,11 +19,26 @@ public class BinaryTree<T extends Comparable<T>> implements Iterable<T>{
             insert(value);
         }
     }
+
+    public boolean isIdentic(BinaryTree tree){
+        return isSameTree(this.root,tree.root);
+    }
+
+    private boolean isSameTree(TreeNode<T> root, TreeNode<T> tree) {
+        if (isNull(root) && isNull(tree) || root.getValue() == tree.getValue()) return true;
+        if (root.getValue() != tree.getValue()) return false;
+        if (root.getLeftChild().getValue() != tree.getLeftChild().getValue()) return false;
+        if (root.getRightChild().getValue() != tree.getRightChild().getValue()) return false;
+        if (isNull(root.getLeftChild())&& !isNull(tree.getLeftChild()) || !isNull(root.getLeftChild())&& isNull(tree.getLeftChild())) return false;
+        if (isNull(root.getRightChild())&& !isNull(tree.getRightChild()) || !isNull(root.getRightChild())&& isNull(tree.getRightChild())) return false;
+        return isSameTree(root.getLeftChild(), tree.getLeftChild()) && isSameTree(root.getRightChild(), tree.getRightChild());
+    }
+
     public void insert(T value) {
         root = insertRecursive(root,value);
     }
     private TreeNode<T> insertRecursive(TreeNode<T> current, T value) {
-        if (current == null){
+        if (isNull(current)){
             current = new TreeNode<>(value);
         }
         int compare = current.value.compareTo(value);
@@ -35,12 +52,23 @@ public class BinaryTree<T extends Comparable<T>> implements Iterable<T>{
         return current;
     }
 
+    public boolean isSymetric(){
+        return isMirror(this.root.getLeftChild(),this.root.getRightChild());
+    }
+
+    private boolean isMirror(TreeNode<T> left, TreeNode right) {
+        if (isNull(left) && !isNull(right)) return false;
+        if (!isNull(left) && isNull(right)) return false;
+        if (!Objects.equals(left.value, right.value)) return false;
+        return isMirror(left.getLeftChild(),right.getRightChild()) && isMirror(left.getRightChild(), right.getLeftChild());
+    }
+
     public boolean contains(T i) {
         return containsRecursive(root,i);
     }
 
     private boolean containsRecursive(TreeNode<T> root, T i) {
-        if (root == null){return false;}
+        if (isNull(root)){return false;}
         int comp = root.value.compareTo(i);
         if (comp > 0){return containsRecursive(root.left,i);}
         else if (comp < 0){return containsRecursive(root.right,i);}
@@ -127,7 +155,7 @@ public class BinaryTree<T extends Comparable<T>> implements Iterable<T>{
     }
 
     private int stages(TreeNode<T> root) {
-        if (root == null) return 0;
+        if (isNull(root)) return 0;
         int hauteurGauche = stages(root.left);
         int hauteurDroite = stages(root.right);
 
@@ -144,7 +172,7 @@ public class BinaryTree<T extends Comparable<T>> implements Iterable<T>{
     }
 
     private void toStringRec(TreeNode<T> node, StringBuilder sb, String prefix, boolean isTail) {
-        if (node == null) {
+        if (isNull(node)) {
             return;
         }
         sb.append(prefix).append((isTail ? "└──" : "├──")).append(node.value).append("\n");
@@ -162,19 +190,19 @@ public class BinaryTree<T extends Comparable<T>> implements Iterable<T>{
     }
 
     public T findMin() {
-        if (root == null) {
+        if (isNull(root)) {
             throw new NoSuchElementException("root is null");
         }
         return findMinRecursive(root);
     }
 
     private T findMinRecursive(TreeNode<T> root) {
-        if (root.left == null) return root.value;
+        if (isNull(root.left)) return root.value;
         return findMinRecursive(root.getLeftChild());
     }
 
     public T findMax(){
-        if (root == null){
+        if (isNull(root)){
             throw new NoSuchElementException("root is null");
         }
         return findMaxRecursive(root);
@@ -185,7 +213,7 @@ public class BinaryTree<T extends Comparable<T>> implements Iterable<T>{
     }
 
     private void printLevelRecursive(TreeNode<T> node, int level) {
-        if (node == null) {
+        if (isNull(root)) {
             return;
         }
         if (level == 0) {
@@ -197,7 +225,7 @@ public class BinaryTree<T extends Comparable<T>> implements Iterable<T>{
     }
 
     private T findMaxRecursive(TreeNode<T> root) {
-        if (root.right == null) return root.value;
+        if (isNull(root.right)) return root.value;
         return findMaxRecursive(root.getRightChild());
     }
 
@@ -206,7 +234,7 @@ public class BinaryTree<T extends Comparable<T>> implements Iterable<T>{
     }
 
     private int maxHeightRec( TreeNode<T> root) {
-        if (root == null) return 0;
+        if (isNull(root)) return 0;
         else {
             int maxleft = maxHeightRec(root.left);
             int maxright = maxHeightRec(root.right);
@@ -220,7 +248,7 @@ public class BinaryTree<T extends Comparable<T>> implements Iterable<T>{
     }
 
     private void TreeToLinkedListRec(TreeNode<T> node,LinkedList<T> list) {
-        if (node != null){
+        if (isNull(root)){
             list.add(node.value);
             TreeToLinkedListRec(node.left,list);
             TreeToLinkedListRec(node.right,list);
@@ -240,7 +268,7 @@ public class BinaryTree<T extends Comparable<T>> implements Iterable<T>{
         }
 
         private void pushLeft(TreeNode<T> root) {
-            while (root != null) {
+            while (isNull(root)) {
                 stack.push(root);
                 root = root.left;
             }

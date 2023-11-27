@@ -338,6 +338,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         }
         return size;
     }
+
     public static void main(String[] args) {
         LinkedList<Integer> myList = new LinkedList<>();
 
