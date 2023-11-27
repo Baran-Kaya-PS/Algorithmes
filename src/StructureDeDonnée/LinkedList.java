@@ -17,6 +17,16 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
             add(val);
         }
     }
+    public boolean isSorted(){
+        Node<T> current = head;
+        while (current != null){
+            if (current.getNext() != null && current.get().compareTo(current.getNext().get()) > 0){
+                return false;
+            }
+            current = current.getNext();
+        }
+        return true;
+    }
     public void add(T data){
         System.out.println("Ajout de l'élément : " + data);
         Node<T> newNode = new Node<>(data);
@@ -35,6 +45,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
             Node<T> node = new Node<>(data);
             node.setNext(head);
             node = head;
+            return;
         }
         Node<T> current = head;
         for (int i = 0; i < index; i++){
@@ -228,30 +239,54 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         return null;
     }
     public void deleteCycle(){
-        if (!this.hasCycle() == true){
-            System.out.println("Aucun cycle détécté!");
-            return;
-        }
-        Node<T> slow = head;
-        Node<T> fast = head.getNext();
+        System.out.println("DeletingCycle...");
+        Node<T> slow = head, fast = head;
+        boolean cycleDetected = false;
 
-        do {
+        // Détecter le cycle
+        while (fast != null && fast.getNext() != null) {
             slow = slow.getNext();
             fast = fast.getNext().getNext();
+
+            if (slow == fast) {
+                cycleDetected = true;
+                break;
+            }
+        }
+
+        if (!cycleDetected) {
+            System.out.println("Aucun cycle détecté!");
+            return;
+        }
+
+        // Trouver la longueur du cycle
+        int cycleLength = 0;
+        do {
+            fast = fast.getNext();
+            cycleLength++;
         } while (slow != fast);
 
+        // Trouver le début du cycle
         slow = head;
-        Node<T> prev = null;
-        while (slow != fast){
-            prev = fast;
+        fast = head;
+        for (int i = 0; i < cycleLength; i++) {
+            fast = fast.getNext();
+        }
+        Node<T> previous = null;
+        while (slow != fast) {
+            previous = fast;
             slow = slow.getNext();
             fast = fast.getNext();
         }
-        if (prev != null){
-            prev.setNext(null);
+
+        // Supprimer le cycle
+        if (previous != null) {
+            previous.setNext(null);
         }
-        System.out.println("cycle supprimé");
+
+        System.out.println("Cycle supprimé.");
     }
+
 
     public void set(int index, T data){
         checkIndex(index);
@@ -285,9 +320,18 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         }
     }
 
+    private BinaryTree<T> LinkedListToTree(){
+        BinaryTree<T> tree = new BinaryTree<>();
+        for (int i = 0; i < this.size();i++){
+            tree.insert(this.get(i));
+            System.out.println(" " +this.get(i) + " a été ajouté ");
+        }
+        return tree;
+    }
+
     private int size() {
         int size = 0;
-        Node<T> current = head.getNext();
+        Node<T> current = head;
         while (current != null){
             size++;
             current = current.getNext();
@@ -317,6 +361,12 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
         System.out.println("Affichage de la liste sans cycle:");
         System.out.println(myList); // Ici, la liste sera affichée sans cycle après suppression
+        BinaryTree<Integer> tree = new BinaryTree<>();
+
+        tree = myList.LinkedListToTree();
+        System.out.println(myList.toString());
+        System.out.println(tree.toString());
+
     }
 
 

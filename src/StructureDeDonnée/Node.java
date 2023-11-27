@@ -59,5 +59,4 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
         // Si aucune valeur n'est null, utilisez compareTo pour les comparer.
         return this.val.compareTo(otherNode.get());
     }
-
 }

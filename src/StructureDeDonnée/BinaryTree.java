@@ -1,10 +1,11 @@
 package StructureDeDonnée;
 import com.sun.source.tree.Tree;
 
+
 import java.util.*;
 import java.util.function.Consumer;
 
-public class BinaryTree<T extends Comparable> implements Iterable<T>{
+public class BinaryTree<T extends Comparable<T>> implements Iterable<T>{
     // TODO implémenter stream dans le code
     TreeNode<T> root;
     public BinaryTree(){root = null;}
@@ -98,7 +99,11 @@ public class BinaryTree<T extends Comparable> implements Iterable<T>{
         binaryTree.insert(4);
         binaryTree.insert(6);
         binaryTree.insert(9);
-
+        for (int i = 0; i < 3; i ++){
+            binaryTree.printLevel(i);
+            System.out.println("");
+        }
+        System.out.println(" \n ");
         String préOrder = binaryTree.préOrderTraversal(binaryTree.root,new StringBuilder()).toString();
         String inOrder = binaryTree.inOrder(binaryTree.root,new StringBuilder()).toString();
         String postOrder = binaryTree.postOrderTraversal(binaryTree.root,new StringBuilder()).toString();
@@ -108,6 +113,34 @@ public class BinaryTree<T extends Comparable> implements Iterable<T>{
         System.out.println(binaryTree.contains(23));
         System.out.println(binaryTree.findMin());
         System.out.println(binaryTree.findMax());
+
+        System.out.println("\n\n\n\n reset de l'arbre");
+        binaryTree.generateTree(0,500,50);
+        int etages = binaryTree.stages(binaryTree.root);
+        for (int i = 0; i < etages;i++){
+            binaryTree.printLevel(i);
+            System.out.println(" ");
+        }
+        System.out.println(" \n ");
+        LinkedList<Integer> linkedList = binaryTree.TreeToLinkedList(binaryTree.root);
+        System.out.println(linkedList.isSorted());
+    }
+
+    private int stages(TreeNode<T> root) {
+        if (root == null) return 0;
+        int hauteurGauche = stages(root.left);
+        int hauteurDroite = stages(root.right);
+
+        return 1 + Math.max(hauteurDroite,hauteurGauche);
+    }
+
+    public void generateTree(int min, int max, int numberOfValues){
+        this.root = null;
+        Random random = new Random();
+        for (int i = 0; i < numberOfValues;i++){
+            T value = (T) Integer.valueOf(random.nextInt(max-min-1)+min);
+            this.insert(value);
+        }
     }
 
     private void toStringRec(TreeNode<T> node, StringBuilder sb, String prefix, boolean isTail) {
@@ -147,6 +180,22 @@ public class BinaryTree<T extends Comparable> implements Iterable<T>{
         return findMaxRecursive(root);
     }
 
+    public void printLevel(int level){
+        printLevelRecursive(root,level);
+    }
+
+    private void printLevelRecursive(TreeNode<T> node, int level) {
+        if (node == null) {
+            return;
+        }
+        if (level == 0) {
+            System.out.print(node.value + " ");
+        } else {
+            printLevelRecursive(node.left, level - 1);
+            printLevelRecursive(node.right, level - 1);
+        }
+    }
+
     private T findMaxRecursive(TreeNode<T> root) {
         if (root.right == null) return root.value;
         return findMaxRecursive(root.getRightChild());
@@ -162,6 +211,19 @@ public class BinaryTree<T extends Comparable> implements Iterable<T>{
             int maxleft = maxHeightRec(root.left);
             int maxright = maxHeightRec(root.right);
             return 1 + Math.max(maxleft, maxright); // incrémente de 1 à partir de la branche la plus basse
+        }
+    }
+    private LinkedList<T> TreeToLinkedList(TreeNode<T> root){
+        LinkedList<T> list = new LinkedList<>();
+        TreeToLinkedListRec(this.root,list);
+        return list;
+    }
+
+    private void TreeToLinkedListRec(TreeNode<T> node,LinkedList<T> list) {
+        if (node != null){
+            list.add(node.value);
+            TreeToLinkedListRec(node.left,list);
+            TreeToLinkedListRec(node.right,list);
         }
     }
 
