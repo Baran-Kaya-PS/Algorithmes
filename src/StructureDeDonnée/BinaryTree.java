@@ -25,12 +25,9 @@ public class BinaryTree<T extends Comparable<T>> implements Iterable<T>{
     }
 
     private boolean isSameTree(TreeNode<T> root, TreeNode<T> tree) {
-        if (isNull(root) && isNull(tree) || root.getValue() == tree.getValue()) return true;
-        if (root.getValue() != tree.getValue()) return false;
-        if (root.getLeftChild().getValue() != tree.getLeftChild().getValue()) return false;
-        if (root.getRightChild().getValue() != tree.getRightChild().getValue()) return false;
-        if (isNull(root.getLeftChild())&& !isNull(tree.getLeftChild()) || !isNull(root.getLeftChild())&& isNull(tree.getLeftChild())) return false;
-        if (isNull(root.getRightChild())&& !isNull(tree.getRightChild()) || !isNull(root.getRightChild())&& isNull(tree.getRightChild())) return false;
+        if (isNull(root) && isNull(tree)) {return true;}
+        if (isNull(root) || isNull(tree)) {return false;}
+        if (!root.getValue().equals(tree.getValue())) {return false;}
         return isSameTree(root.getLeftChild(), tree.getLeftChild()) && isSameTree(root.getRightChild(), tree.getRightChild());
     }
 
@@ -253,6 +250,121 @@ public class BinaryTree<T extends Comparable<T>> implements Iterable<T>{
             TreeToLinkedListRec(node.left,list);
             TreeToLinkedListRec(node.right,list);
         }
+    }
+    private List<List<T>> BFS() {
+        List<List<T>> levels = new ArrayList<>();
+        if (root == null) return levels;
+
+        Queue<TreeNode<T>> queue = new java.util.LinkedList<>(); // LinkedList implements Queue
+        queue.add(root);
+
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+            List<T> currentLevel = new ArrayList<>();
+
+            for (int i = 0; i < levelSize; i++) {
+                TreeNode<T> node = queue.poll();
+                currentLevel.add(node.value);
+
+                if (node.left != null) {
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    queue.add(node.right);
+                }
+            }
+
+            levels.add(currentLevel);
+        }
+
+        return levels;
+    }
+
+    private List<List<T>> DFS() {
+        List<List<T>> levels = new ArrayList<>();
+        if (root == null) return levels;
+
+        Stack<TreeNode<T>> stack = new Stack<>();
+        stack.push(root);
+
+        while (!stack.isEmpty()) {
+            int levelSize = stack.size();
+            List<T> currentLevel = new ArrayList<>();
+
+            for (int i = 0; i < levelSize; i++) {
+                TreeNode<T> node = stack.pop();
+                currentLevel.add(node.value);
+
+                if (node.right != null) {
+                    stack.push(node.right);
+                }
+                if (node.left != null) {
+                    stack.push(node.left);
+                }
+            }
+            levels.add(currentLevel);
+        }
+        return levels;
+    }
+
+    public int maxSum(){
+        return maxSumRec(this.root);
+    }
+
+    private int maxSumRec(TreeNode<T> root) {
+        if (root == null) return 0;
+        int leftSum = Math.max(0,maxSumRec(root.left));
+        int rightSum = Math.max(0,maxSumRec(root.right));
+
+        int node = Integer.parseInt(root.value.toString());
+
+        return node + Math.max(leftSum,rightSum);
+    }
+
+    private String serialize() {
+        if (root == null) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        Queue<TreeNode<T>> queue = new java.util.LinkedList<>();
+        queue.add(root);
+
+        while (!queue.isEmpty()) {
+            TreeNode<T> node = queue.poll();
+
+            if (node == null) {
+                sb.append("#,"); // # représente un noeud null
+            } else {
+                sb.append(node.value).append(",");
+                queue.add(node.left);
+                queue.add(node.right);
+            }
+        }
+
+        sb.deleteCharAt(sb.length() - 1); // Suppression de la dernière virgule
+        return sb.toString();
+    }
+
+
+    private BinaryTree deserialize(String data){
+        if (data == null || data.isEmpty()){
+            return null;
+        }
+        String[] levels = data.split(";"); // split va faire des tableaux de string avec les valeurs séparées par ";"
+        BinaryTree<T> root = new BinaryTree<>(); // création du root
+        for (String level : levels) {
+            String[] values = level.split(","); // séparation des valeurs
+            for (String value : values) { //
+                value = String.valueOf(Integer.parseInt(value));
+                root.insert((T) value);
+            }
+        }
+        return root;
+    }
+
+    private void deserial(){
+
     }
 
     @Override
