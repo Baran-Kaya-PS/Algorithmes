@@ -362,10 +362,49 @@ public class BinaryTree<T extends Comparable<T>> implements Iterable<T>{
         }
         return root;
     }
-
-    private void deserial(){
-
+    private TreeNode<T> lowestCommonAncestor(TreeNode p, TreeNode q){
+        return lowestCommonAncestorRec(this.root,p,q);
     }
+
+    private TreeNode<T> lowestCommonAncestorRec(TreeNode<T> root, TreeNode p, TreeNode q) {
+        if (root == null) {
+            return null;
+        }
+
+        if (root == p || root == q) {
+            return root;
+        }
+        TreeNode<T> left = lowestCommonAncestorRec(root.left, p, q);
+        TreeNode<T> right = lowestCommonAncestorRec(root.right, p, q);
+
+        if (left == null && right == null) {
+            return null;
+        }
+        if (left != null && right != null) {
+            return root;
+        }
+        if (left == null) {
+            return right;
+        }
+        return left;
+    }
+    private void deleteNode(T value){
+        if (!this.contains(value)) return;
+        deleteNodeRec(this.root,value);
+    }
+    private TreeNode<T> deleteNodeRec(TreeNode<T> root, T value) {
+        if (root == null) {
+            return null;
+        }
+        TreeNode left = deleteNodeRec(root.left,value);
+        TreeNode right = deleteNodeRec(root.right,value);
+        if (left.value == value) {
+
+        }
+        if (right.value == value) {}
+        return null;
+    }
+
 
     @Override
     public Iterator<T> iterator() {
@@ -385,7 +424,6 @@ public class BinaryTree<T extends Comparable<T>> implements Iterable<T>{
                 root = root.left;
             }
         }
-
         @Override
         public boolean hasNext() {
             return !this.stack.isEmpty();
