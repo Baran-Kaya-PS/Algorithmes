@@ -2,16 +2,11 @@ import StructureDeDonnée.Tas;
 
 import java.util.HashSet;
 import java.util.Random;
+import java.util.Vector;
 
 public class Main {
     public static void main(String[] args) {
-        int[] a = new int[]{5,3,1,17,10,84,19,6,22,9};
-        int capacité = a.length;
-        Tas t = new Tas(capacité);
-        t.setTas(a);
-        t.construireTasMax(a);
-        System.out.println(t.Max());
-        t.augmenterClé(8,100);
+
     }
 
     public static int[] permute_par_tri(int[] a){
