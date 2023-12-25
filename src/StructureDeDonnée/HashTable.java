@@ -1,15 +1,22 @@
 package StructureDeDonnée;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
-public class HashTable implements Map {
-    private HashTableEntry[] hashTable;
-
-    public HashTable(){}
+import java.util.*;
+import java.util.LinkedList;
 
 
+public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
+    private static final int DEFAULT_INITIAL_CAPACITY = 16;
+    private static final float DEFAULT_LOAD_FACTOR = 0.75f;
+    private HashTableEntry<K,V>[] hashTable;
+    private int size;
+    private float loadFactor;
+    private int threshold;
+    public HashTable(){
+        hashTable = (HashTableEntry<K, V>[]) new HashTableEntry[DEFAULT_INITIAL_CAPACITY];
+        size = 0;
+        loadFactor = DEFAULT_LOAD_FACTOR;
+        threshold = (int) (DEFAULT_INITIAL_CAPACITY*DEFAULT_LOAD_FACTOR);
+    }
     /**
      * Returns the number of key-value mappings in this map.  If the
      * map contains more than {@code Integer.MAX_VALUE} elements, returns
@@ -19,7 +26,7 @@ public class HashTable implements Map {
      */
     @Override
     public int size() {
-        return 0;
+        return this.size;
     }
 
     /**
@@ -29,7 +36,7 @@ public class HashTable implements Map {
      */
     @Override
     public boolean isEmpty() {
-        return false;
+        return size() == 0;
     }
 
     /**
@@ -51,7 +58,25 @@ public class HashTable implements Map {
      */
     @Override
     public boolean containsKey(Object key) {
+        if (key == null) {
+            throw new NullPointerException("object key is null");
+        }
+        int index = hash(key);
+        HashTableEntry<K,V> currentEntry = hashTable[index];
+        while (currentEntry != null){
+            if (Objects.equals(currentEntry.getKey(),key)){
+                return true;
+            }
+            currentEntry = currentEntry.getNext();
+        }
         return false;
+    }
+
+    private int hash(Object key) {
+        int index = key.hashCode();
+        index ^= (index >>> 20) ^ (index >>> 12); // décalage de bits
+        index = index ^ (index >>> 7) ^ (index >>> 4);
+        return index & hashTable.length-1;
     }
 
     /**
@@ -74,8 +99,18 @@ public class HashTable implements Map {
      */
     @Override
     public boolean containsValue(Object value) {
-        return false;
+        for (int i = 0; i < hashTable.length; i++) {
+            HashTableEntry<K, V> entry = hashTable[i];
+            while (entry != null) {
+                if (Objects.equals(entry.getValue(), value)) {
+                    return true; // Valeur trouvée
+                }
+                entry = entry.getNext(); // Passez à la prochaine entrée dans la liste chaînée
+            }
+        }
+        return false; // Valeur non trouvée
     }
+
 
     /**
      * Returns the value to which the specified key is mapped,
@@ -104,8 +139,9 @@ public class HashTable implements Map {
      *                              (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
      */
     @Override
-    public Object get(Object key) {
-        return null;
+    public V get(Object key) {
+        int index = hash(key);
+        return hashTable[index].getValue();
     }
 
     /**
@@ -133,8 +169,10 @@ public class HashTable implements Map {
      *                                       or value prevents it from being stored in this map
      */
     @Override
-    public Object put(Object key, Object value) {
-        return null;
+    public V put(K key, V value) {
+        int index = hash(key);
+        hashTable[index] = new HashTableEntry<>(key,value);
+        return value;
     }
 
     /**
@@ -168,7 +206,7 @@ public class HashTable implements Map {
      *                                       (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
      */
     @Override
-    public Object remove(Object key) {
+    public V remove(Object key) {
         return null;
     }
 
@@ -192,7 +230,7 @@ public class HashTable implements Map {
      *                                       the specified map prevents it from being stored in this map
      */
     @Override
-    public void putAll(Map m) {
+    public void putAll(Map<? extends K, ? extends V> m) {
 
     }
 
@@ -224,7 +262,7 @@ public class HashTable implements Map {
      * @return a set view of the keys contained in this map
      */
     @Override
-    public Set keySet() {
+    public Set<K> keySet() {
         return null;
     }
 
@@ -244,7 +282,7 @@ public class HashTable implements Map {
      * @return a collection view of the values contained in this map
      */
     @Override
-    public Collection values() {
+    public Collection<V> values() {
         return null;
     }
 
@@ -265,7 +303,7 @@ public class HashTable implements Map {
      * @return a set view of the mappings contained in this map
      */
     @Override
-    public Set<Entry> entrySet() {
+    public Set<Entry<K, V>> entrySet() {
         return null;
     }
 }

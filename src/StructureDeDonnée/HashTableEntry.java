@@ -35,7 +35,7 @@ public class HashTableEntry<K extends Comparable<K>,V> implements Map.Entry<K,V>
         this.next = next;
     }
     public int compareTo(HashTableEntry<K,V> other){
-        return this.getKey().compareTo(compareTo(other.getKey()));
+        return this.getKey().compareTo(other.getKey());
     }
     @Override
     public boolean equals(Object o){
