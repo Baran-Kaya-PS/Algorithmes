@@ -3,6 +3,8 @@ package StructureDeDonnée;
 import java.util.*;
 import java.util.LinkedList;
 
+import static java.util.Objects.isNull;
+
 
 public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
     private static final int DEFAULT_INITIAL_CAPACITY = 16;
@@ -103,12 +105,12 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
             HashTableEntry<K, V> entry = hashTable[i];
             while (entry != null) {
                 if (Objects.equals(entry.getValue(), value)) {
-                    return true; // Valeur trouvée
+                    return true;
                 }
-                entry = entry.getNext(); // Passez à la prochaine entrée dans la liste chaînée
+                entry = entry.getNext();
             }
         }
-        return false; // Valeur non trouvée
+        return false;
     }
 
 
@@ -140,8 +142,16 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public V get(Object key) {
+        if (isNull(key)){
+            throw new NullPointerException("this map does not permit null keys");
+        }
         int index = hash(key);
-        return hashTable[index].getValue();
+        HashTableEntry<K,V> entry = hashTable[index];
+        while(entry != null && !Objects.equals(key,entry.getKey())){
+            entry = entry.getNext();
+        }
+        if (entry == null) return null;
+        return entry.getValue();
     }
 
     /**
