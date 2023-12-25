@@ -180,9 +180,37 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public V put(K key, V value) {
+        if(isNull(key) || isNull(value)) {
+            throw new NullPointerException("Key or value is null");
+        }
         int index = hash(key);
-        hashTable[index] = new HashTableEntry<>(key,value);
-        return value;
+        HashTableEntry<K,V> existingEntry = hashTable[index];
+        HashTableEntry<K,V> prev = null;
+
+        while (existingEntry != null){
+            if (Objects.equals(existingEntry.getKey(),key)){
+                V oldValue = existingEntry.getValue();
+                existingEntry.setValue(value);
+                return oldValue;
+            }
+            prev = existingEntry;
+            existingEntry = existingEntry.getNext();
+        }
+        HashTableEntry<K,V> newEntry = new HashTableEntry<>(key,value);
+        if (prev != null){
+            prev.setNext(newEntry);
+        } else {
+            hashTable[index] = newEntry;
+        }
+        size++;
+        if(size >= threshold){
+            resize();
+        }
+        return null;
+    }
+
+    public void resize(){
+        
     }
 
     /**
