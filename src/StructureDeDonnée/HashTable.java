@@ -210,7 +210,7 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
     }
 
     public void resize(){
-        
+
     }
 
     /**
@@ -245,6 +245,24 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public V remove(Object key) {
+        if (isNull(key)) throw new NullPointerException("map does not permit null keys");
+        int index = hash(key);
+        HashTableEntry<K,V> current = hashTable[index];
+        HashTableEntry<K,V> prev = null;
+        while (current != null) {
+            if (Objects.equals(current.getKey(), key)) {
+                if (prev == null){
+                    HashTableEntry<K,V> next = current.getNext();
+                    hashTable[index] = next;
+                } else {
+                    prev.setNext(current.getNext());
+                }
+                size--;
+                return current.getValue();
+            }
+            prev = current;
+            current = current.getNext();
+        }
         return null;
     }
 
@@ -281,7 +299,9 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public void clear() {
-
+        hashTable = (HashTableEntry<K,V>[]) new HashTableEntry[DEFAULT_INITIAL_CAPACITY];
+        size = 0;
+        threshold = (int) (DEFAULT_INITIAL_CAPACITY*loadFactor);
     }
 
     /**
