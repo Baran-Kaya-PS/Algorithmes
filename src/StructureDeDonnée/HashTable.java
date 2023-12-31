@@ -210,7 +210,107 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
     }
 
     public void resize(){
+        int newCapacity = hashTable.length*2;
+        HashTableEntry<K,V>[] newTable = (HashTableEntry<K, V>[]) new HashTableEntry[newCapacity];
 
+        for (HashTableEntry<K,V> headNode : hashTable){
+            HashTableEntry<K,V> currentNode = headNode;
+            while (currentNode != null){
+                int newIndex = rehash(currentNode.getKey(),newCapacity);
+                HashTableEntry<K,V> nextNode = currentNode.getNext();
+                currentNode.setNext(newTable[newIndex]);
+                newTable[newIndex] = currentNode;
+
+                currentNode = nextNode;
+            }
+        }
+        hashTable = newTable;
+        threshold = (int) (newCapacity*loadFactor);
+    }
+
+    private int rehash(K key, int newCapacity) {
+        int index = key.hashCode();
+        index ^= (index >>> 20) ^ (index >>> 12); // décalage de bits
+        index = index ^ (index >>> 7) ^ (index >>> 4);
+        return index & newCapacity-1;
+    }
+
+    public class Main {
+        public static void main(String[] args) {
+            HashTable<String, Integer> hashTable = new HashTable<>();
+
+            // Test de la méthode put
+            hashTable.put("clé1", 1);
+            hashTable.put("clé2", 2);
+            hashTable.put("clé3", 3);
+
+            // Test de la méthode get
+            System.out.println("Valeur pour 'clé1': " + hashTable.get("clé1"));
+
+            // Test de la méthode containsKey
+            System.out.println("Contient 'clé2'?: " + hashTable.containsKey("clé2"));
+
+            // Test de la méthode containsValue
+            System.out.println("Contient la valeur 3?: " + hashTable.containsValue(3));
+
+            // Test de la méthode size et isEmpty
+            System.out.println("Taille: " + hashTable.size());
+            System.out.println("Est vide?: " + hashTable.isEmpty());
+
+            // Test de la méthode remove
+            hashTable.remove("clé2");
+            System.out.println("Contient 'clé2' après suppression?: " + hashTable.containsKey("clé2"));
+
+            // Test de la méthode clear
+            hashTable.clear();
+            System.out.println("Taille après nettoyage: " + hashTable.size());
+
+            // Ajouter plus d'éléments pour tester resize
+            for(int i = 0; i < 20; i++) {
+                hashTable.put("clé" + i, i);
+            }
+
+            // Vérifier le redimensionnement
+            System.out.println("Taille après redimensionnement: " + hashTable.size());
+        }
+    }
+
+    public static void main(String[] args) {
+        HashTable<String, Integer> hashTable = new HashTable<>();
+
+        // Test de la méthode put
+        hashTable.put("clé1", 1);
+        hashTable.put("clé2", 2);
+        hashTable.put("clé3", 3);
+
+        // Test de la méthode get
+        System.out.println("Valeur pour 'clé1': " + hashTable.get("clé1"));
+
+        // Test de la méthode containsKey
+        System.out.println("Contient 'clé2'?: " + hashTable.containsKey("clé2"));
+
+        // Test de la méthode containsValue
+        System.out.println("Contient la valeur 3?: " + hashTable.containsValue(3));
+
+        // Test de la méthode size et isEmpty
+        System.out.println("Taille: " + hashTable.size());
+        System.out.println("Est vide?: " + hashTable.isEmpty());
+
+        // Test de la méthode remove
+        hashTable.remove("clé2");
+        System.out.println("Contient 'clé2' après suppression?: " + hashTable.containsKey("clé2"));
+
+        // Test de la méthode clear
+        hashTable.clear();
+        System.out.println("Taille après nettoyage: " + hashTable.size());
+
+        // Ajouter plus d'éléments pour tester resize
+        for(int i = 0; i < 20; i++) {
+            hashTable.put("clé" + i, i);
+        }
+
+        // Vérifier le redimensionnement
+        System.out.println("Taille après redimensionnement: " + hashTable.size());
     }
 
     /**
