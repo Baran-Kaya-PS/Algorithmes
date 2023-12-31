@@ -482,6 +482,16 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public Set<Entry<K, V>> entrySet() {
-        return null;
+        Set<Entry<K,V>> entrySet = new HashSet<>();
+        for (HashTableEntry<K,V> entry : hashTable){
+            if (entry != null){
+                HashTableEntry current = entry;
+                while (current != null){
+                    entrySet.add(current);
+                    current = current.getNext();
+                }
+            }
+        }
+        return entrySet;
     }
 }
