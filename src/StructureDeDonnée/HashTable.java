@@ -451,7 +451,17 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public Collection<V> values() {
-        return null;
+        Collection<V> collection = new ArrayList<>();
+        for (HashTableEntry<K,V> entry : hashTable){
+            if (entry != null){
+                HashTableEntry current = entry;
+                while (current != null){
+                    collection.add((V) current.getValue());
+                    current = current.getNext();
+                }
+            }
+        }
+        return collection;
     }
 
     /**
