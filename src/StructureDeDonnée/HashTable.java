@@ -532,7 +532,19 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public V getOrDefault(Object key, V defaultValue) {
-        return Map.super.getOrDefault(key, defaultValue);
+        if (key == null){
+            throw new NullPointerException();
+        }
+        int index = hash((K)key);
+        HashTableEntry entry = hashTable[index];
+
+        while (entry!=null){
+            if (Objects.equals(key,entry.getKey())){
+                return (V) entry.getValue();
+            }
+            entry = entry.getNext();
+        }
+        return defaultValue;
     }
 
     /**
@@ -560,7 +572,18 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public void forEach(BiConsumer<? super K, ? super V> action) {
-        Map.super.forEach(action);
+        if (action == null){
+            throw new NullPointerException();
+        }
+        for (HashTableEntry<K,V> entry : hashTable){
+            if (entry != null){
+                HashTableEntry current = entry;
+                while (current != null){
+                    action.accept((K)current.getKey(),(V)current.getValue()); //
+                    current = current.getNext();
+                }
+            }
+        }
     }
 
     /**
