@@ -665,7 +665,9 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public V putIfAbsent(K key, V value) {
-        return Map.super.putIfAbsent(key, value);
+        if (this.containsKey(key)) return value;
+        else this.put(key,value);
+        return value;
     }
 
     /**
@@ -702,7 +704,11 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public boolean remove(Object key, Object value) {
-        return Map.super.remove(key, value);
+        if (containsKey(key)) {
+            remove(key);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -747,7 +753,11 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public boolean replace(K key, V oldValue, V newValue) {
-        return Map.super.replace(key, oldValue, newValue);
+        if (containsKey(key) && Objects.equals(get(key),oldValue)){
+            put(key,newValue);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -788,7 +798,11 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public V replace(K key, V value) {
-        return Map.super.replace(key, value);
+        if (containsKey(key)){
+            return put(key,value);
+        } else {
+            return get(key);
+        }
     }
 
     /**
