@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 
 public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
     //TODO implémenter STREAM --> plus rapide a écrire
+    // complexifier voir trouver des exos leetcode / problèmes créatifs -> 
     Node<T> head;
     Node<T> tail;
 
