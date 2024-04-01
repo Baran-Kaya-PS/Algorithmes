@@ -51,3 +51,9 @@
 
 
 # faire des benchmark avec tableau
+
+
+
+Recherche
+Minimum/Maximum/Suivant o(h) (hauteur)
+ 

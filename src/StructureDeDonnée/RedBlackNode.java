@@ -1,6 +1,11 @@
 package StructureDeDonnée;
 
-public class RedBlackNode<T>{
+public class RedBlackNode<T extends Comparable<T>> implements Comparable<RedBlackNode<T>>{
+    @Override
+    public int compareTo(RedBlackNode<T> o) {
+        return this.getData().compareTo(o.getData());
+    }
+
     public enum Color {
         RED,BLACK;
     }
@@ -60,4 +65,5 @@ public class RedBlackNode<T>{
     public static void main(String[] args){
         // works
     }
+
 }
