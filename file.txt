@@ -1,0 +1,21 @@
+Segment Tree :
+
+Utilité : Le Segment Tree est principalement utilisé pour résoudre des problèmes liés aux intervalles, comme trouver la somme, le minimum, ou le maximum dans un intervalle d'un tableau.
+Fonctionnement : Il construit un arbre où chaque nœud représente un intervalle du tableau. La racine représente l'ensemble du tableau, et chaque niveau de l'arbre divise les intervalles en sous-intervalles plus petits.
+Complexité : Les opérations de mise à jour et de requête sur le Segment Tree sont effectuées en O(log n) temps, ce qui le rend très efficace pour des opérations répétées sur des intervalles.
+Particularités : Permet de faire des opérations sur des intervalles, comme la mise à jour des éléments d'un intervalle ou la récupération d'informations sur un intervalle.
+Fenwick Tree (Binary Indexed Tree) :
+
+Utilité : Utilisé pour calculer des sommes cumulatives ou des préfixes et les mettre à jour efficacement.
+Différence avec le Segment Tree : Le Fenwick Tree permet uniquement des opérations de mise à jour et de requête sur les éléments individuels ou sur des sommes cumulatives, mais pas sur des intervalles arbitraires.
+Fonctionnement : Il utilise une représentation binaire pour stocker des préfixes de l'ensemble des données, permettant des calculs cumulatifs et des mises à jour en O(log n).
+Skip List :
+
+Utilité : Une alternative probabiliste aux arbres équilibrés pour des opérations de recherche, d'insertion et de suppression.
+Fonctionnement : Ressemble à une liste chaînée, mais avec des niveaux supplémentaires de liens, permettant de "sauter" à travers la liste rapidement.
+Particularités : Chaque élément de la liste peut avoir un ou plusieurs pointeurs vers d'autres éléments, ce qui réduit le temps de recherche moyen.
+Arbres Suffixes :
+
+Utilité : Utilisés pour des recherches de sous-chaînes, comme la recherche de répétitions ou de motifs dans les chaînes de caractères.
+Fonctionnement : Un arbre suffixe est construit à partir d'une chaîne de caractères et représente tous ses suffixes.
+Particularités : Permet des recherches rapides et efficaces dans le texte, y compris pour trouver le plus long suffixe commun entre deux chaînes.

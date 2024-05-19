@@ -337,7 +337,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
             size++;
             current = current.getNext();
         }
-        return size;
+         return size;
     }
 
     public static void main(String[] args) {

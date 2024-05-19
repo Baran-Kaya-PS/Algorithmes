@@ -1,23 +1,17 @@
-package StructureDeDonnée;
+package StructureDeDonnée.Map;
+import StructureDeDonnée.HashTableEntry;
 
-import java.util.*;
-import java.util.LinkedList;
-
-import static java.util.Objects.isNull;
-
-
-public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
+public class SimpleConcurrentHashMap<K extends Comparable<K>,V> implements Map<K,V>{
     private static final int DEFAULT_INITIAL_CAPACITY = 16;
     private static final float DEFAULT_LOAD_FACTOR = 0.75f;
-    private HashTableEntry<K,V>[] hashTable;
-    private int size;
-    private float loadFactor;
-    private int threshold;
-    public HashTable(){
-        hashTable = (HashTableEntry<K, V>[]) new HashTableEntry[DEFAULT_INITIAL_CAPACITY];
-        size = 0;
-        loadFactor = DEFAULT_LOAD_FACTOR;
-        threshold = (int) (DEFAULT_INITIAL_CAPACITY*DEFAULT_LOAD_FACTOR);
+    private static final int MAXIMUM_CAPACITY = 1 << 30;
+    private HashTableEntry<K,V>[] table;
+    public SimpleConcurrentHashMap(){
+
     }
     /**
      * Returns the number of key-value mappings in this map.  If the
@@ -28,7 +22,7 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public int size() {
-        return this.size;
+        return 0;
     }
 
     /**
@@ -38,7 +32,7 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public boolean isEmpty() {
-        return size() == 0;
+        return false;
     }
 
     /**
@@ -60,25 +54,7 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public boolean containsKey(Object key) {
-        if (key == null) {
-            throw new NullPointerException("object key is null");
-        }
-        int index = hash(key);
-        HashTableEntry<K,V> currentEntry = hashTable[index];
-        while (currentEntry != null){
-            if (Objects.equals(currentEntry.getKey(),key)){
-                return true;
-            }
-            currentEntry = currentEntry.getNext();
-        }
         return false;
-    }
-
-    private int hash(Object key) {
-        int index = key.hashCode();
-        index ^= (index >>> 20) ^ (index >>> 12); // décalage de bits
-        index = index ^ (index >>> 7) ^ (index >>> 4);
-        return index & hashTable.length-1;
     }
 
     /**
@@ -101,18 +77,8 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public boolean containsValue(Object value) {
-        for (int i = 0; i < hashTable.length; i++) {
-            HashTableEntry<K, V> entry = hashTable[i];
-            while (entry != null) {
-                if (Objects.equals(entry.getValue(), value)) {
-                    return true;
-                }
-                entry = entry.getNext();
-            }
-        }
         return false;
     }
-
 
     /**
      * Returns the value to which the specified key is mapped,
@@ -142,16 +108,7 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public V get(Object key) {
-        if (isNull(key)){
-            throw new NullPointerException("this map does not permit null keys");
-        }
-        int index = hash(key);
-        HashTableEntry<K,V> entry = hashTable[index];
-        while(entry != null && !Objects.equals(key,entry.getKey())){
-            entry = entry.getNext();
-        }
-        if (entry == null) return null;
-        return entry.getValue();
+        return null;
     }
 
     /**
@@ -180,37 +137,7 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public V put(K key, V value) {
-        if(isNull(key) || isNull(value)) {
-            throw new NullPointerException("Key or value is null");
-        }
-        int index = hash(key);
-        HashTableEntry<K,V> existingEntry = hashTable[index];
-        HashTableEntry<K,V> prev = null;
-
-        while (existingEntry != null){
-            if (Objects.equals(existingEntry.getKey(),key)){
-                V oldValue = existingEntry.getValue();
-                existingEntry.setValue(value);
-                return oldValue;
-            }
-            prev = existingEntry;
-            existingEntry = existingEntry.getNext();
-        }
-        HashTableEntry<K,V> newEntry = new HashTableEntry<>(key,value);
-        if (prev != null){
-            prev.setNext(newEntry);
-        } else {
-            hashTable[index] = newEntry;
-        }
-        size++;
-        if(size >= threshold){
-            resize();
-        }
         return null;
-    }
-
-    public void resize(){
-
     }
 
     /**
@@ -245,24 +172,6 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public V remove(Object key) {
-        if (isNull(key)) throw new NullPointerException("map does not permit null keys");
-        int index = hash(key);
-        HashTableEntry<K,V> current = hashTable[index];
-        HashTableEntry<K,V> prev = null;
-        while (current != null) {
-            if (Objects.equals(current.getKey(), key)) {
-                if (prev == null){
-                    HashTableEntry<K,V> next = current.getNext();
-                    hashTable[index] = next;
-                } else {
-                    prev.setNext(current.getNext());
-                }
-                size--;
-                return current.getValue();
-            }
-            prev = current;
-            current = current.getNext();
-        }
         return null;
     }
 
@@ -287,6 +196,7 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
+
     }
 
     /**
@@ -298,9 +208,7 @@ public class HashTable<K extends Comparable<K>, V> implements Map<K,V> {
      */
     @Override
     public void clear() {
-        hashTable = (HashTableEntry<K,V>[]) new HashTableEntry[DEFAULT_INITIAL_CAPACITY];
-        size = 0;
-        threshold = (int) (DEFAULT_INITIAL_CAPACITY*loadFactor);
+
     }
 
     /**
