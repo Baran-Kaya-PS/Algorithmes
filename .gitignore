@@ -27,3 +27,16 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+# Fichiers d'IDE et de build
+.idea/
+*.iml
+*.class
+*.o
+*.exe
+__pycache__/
+*.pyc
+cmake-build-*/
+target/
+.ipynb_checkpoints/
+node_modules/
+.env
